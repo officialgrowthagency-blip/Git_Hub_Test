@@ -1,4 +1,3 @@
-
 import 'package:test_firbase_project/features/auth/domain/entity.dart';
 import 'package:test_firbase_project/features/auth/domain/repositories.dart';
 
@@ -18,14 +17,21 @@ class UserAuthCase {
   }
 
    Future<void> updatePassword ({
-    required String email,
+    required String curentPassword,
     required String password,
    }) async{
      
-     await repositories.changePasswordRequest(email: email, password: password);
+     await repositories.changePasswordRequest(currentPassword: curentPassword, newPassword: password);
    }
 
   Future<void> logOut () async {
    return await repositories.logOutUser();
   }
+
+   Future<AuthenticatedUser?> getUserData ({
+    required String uid,
+   }) async {
+
+     return await repositories.getUserData(uid: uid);
+   }
 }

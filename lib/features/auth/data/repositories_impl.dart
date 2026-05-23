@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:test_firbase_project/features/auth/data/data_source.dart';
+import 'package:test_firbase_project/features/auth/data/model.dart';
 import 'package:test_firbase_project/features/auth/domain/entity.dart';
 import 'package:test_firbase_project/features/auth/domain/repositories.dart';
 
@@ -40,13 +41,15 @@ class FirbaseRepository extends Repositories {
 
     try {
       return AuthenticatedUser(
-        uid: credential.user?.uid ?? '', 
-        email: credential.user?.email ?? "No Email",
+        uid: credential.uid, 
+        email: credential.email,
       );
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
     }
   }
+
+   
   
   @override
   Future<void> logOutUser() async {
@@ -56,13 +59,22 @@ class FirbaseRepository extends Repositories {
   
   @override
   Future<void> changePasswordRequest({
-    required String email, 
-    required String password}) async{
-    
+    required String currentPassword, 
+    required String newPassword}) async{
+     
      await firbaseService.changePassword(
-      currentPasswordControler: email, 
-      newPasswordControler: password,
+      currentPasswordControler: currentPassword, 
+      newPasswordControler: newPassword,
     );
    
+  }
+  
+  @override
+  Future<UserModel> getUserData({required String uid}) async {
+    
+    final model = await firbaseService.getUserFireStore(uid: uid);
+
+     return model;
+
   }
 }

@@ -1,33 +1,34 @@
-  import 'package:test_firbase_project/features/auth/domain/entity.dart';
+import 'package:test_firbase_project/features/auth/domain/entity.dart';
 
 abstract class AuthEvent {}
 
-  class FetchAuthEvent extends AuthEvent {
+class FetchAuthEvent extends AuthEvent {
+  final UserEntity user;
 
-    final UserEntity user;
+  FetchAuthEvent({required this.user});
+}
 
-    FetchAuthEvent({
-      required this.user
-    });
-  }
+class FetchSignAuthEvent extends AuthEvent {
+  final UserEntity? user;
 
-   class  FetchSignAuthEvent extends AuthEvent {
+  FetchSignAuthEvent({required this.user});
+}
 
-    final UserEntity? user;
+class PasswordUpdateEvent extends AuthEvent {
+  final String currentPassword;
+  final String newPassword;
+  PasswordUpdateEvent({
+    required this.currentPassword,
+    required this.newPassword,
+  });
+}
 
-    FetchSignAuthEvent({
-      required this.user
-    });
-     
-   }
+class GetFireStoreDataEvent extends AuthEvent {
 
-    class PasswordUpdateEvent extends AuthEvent {
-       final String email;
-       final String password;
-       PasswordUpdateEvent({
-        required this.email,
-        required this.password,
-       });
-    }
+   final String uid;
+  
 
-    class LogOutEvent extends AuthEvent {}
+  GetFireStoreDataEvent({required this.uid});
+}
+
+class LogOutEvent extends AuthEvent {}

@@ -1,4 +1,5 @@
 
+import 'package:test_firbase_project/features/auth/data/model.dart';
 import 'package:test_firbase_project/features/auth/domain/entity.dart';
 
 abstract class Repositories {
@@ -13,9 +14,13 @@ abstract class Repositories {
      required String password,
   });
 
+   Future<UserModel> getUserData ({
+     required String uid,
+   });
+
   Future<void> changePasswordRequest ({
-    required String email,
-    required String password,
+    required String currentPassword,
+    required String newPassword,
   });
 
    Future<void> logOutUser ();

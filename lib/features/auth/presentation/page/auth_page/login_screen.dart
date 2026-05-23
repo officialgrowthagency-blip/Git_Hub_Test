@@ -10,6 +10,7 @@ import 'package:test_firbase_project/features/auth/presentation/page/auth_page/s
 import 'package:test_firbase_project/features/auth/presentation/page/home_screen.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/colors.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/regex_validator.dart';
+import 'package:test_firbase_project/features/auth/presentation/widgets/reusable_snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -98,7 +99,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        
+                      },
                       child: Text("Forget Password?"),
                     ),
                   ],
@@ -117,13 +120,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         MaterialPageRoute(builder: (_) => HomeScreen(userData: state.user)),
                       );
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Login Successful")),
-                      );
+                        AppSnackbar.snackBar(
+                      context, 
+                      "Login Successful",
+                    );
+
                     } else if (state is ErrorRequest) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text(state.message ?? 'Login failed')));
+                      
+                     AppSnackbar.snackBar(
+                      context, 
+                      state.message ?? 'Login failed',
+                    );        
                     }
                   },
 

@@ -1,4 +1,3 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +7,7 @@ import 'package:test_firbase_project/features/auth/presentation/bloc/auth_state.
 import 'package:test_firbase_project/features/auth/presentation/page/auth_page/login_screen.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/colors.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/regex_validator.dart';
-
+import 'package:test_firbase_project/features/auth/presentation/widgets/reusable_snackbar.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -23,21 +22,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _emailControler = TextEditingController();
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
 
-   final FirbaseAuthService firbaseAuth = FirbaseAuthService();
+  final FirbaseAuthService firbaseAuth = FirbaseAuthService();
 
-  late final TapGestureRecognizer _gestureRecognizer = 
-  TapGestureRecognizer()..onTap = () {
-     Navigator.pushReplacement(context, 
-     MaterialPageRoute(builder: (context)=> const LoginScreen()
-     ),
-    );
-  };
+  late final TapGestureRecognizer _gestureRecognizer = TapGestureRecognizer()
+    ..onTap = () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    };
 
   bool removeRedEye = false;
 
-   @override
+  @override
   void dispose() {
-   _gestureRecognizer.dispose();
+    _gestureRecognizer.dispose();
     super.dispose();
   }
 
@@ -59,13 +58,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   "Create Account",
                   style: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
                 ),
-            
+
                 const SizedBox(height: 10),
-            
-                const Text("Sign up get started", style: TextStyle(fontSize: 14)),
-            
+
+                const Text(
+                  "Sign up get started",
+                  style: TextStyle(fontSize: 14),
+                ),
+
                 const SizedBox(height: 40),
-            
+
                 TextFormField(
                   controller: _nameControler,
                   decoration: InputDecoration(
@@ -73,33 +75,33 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     hintText: "Enter First and Last Name",
                     prefixIcon: Icon(Icons.person),
                   ),
-                    validator: Validator.validName,
+                  validator: Validator.validName,
                 ),
-            
+
                 const SizedBox(height: 25),
-            
+
                 TextFormField(
                   controller: _emailControler,
-            
+
                   decoration: InputDecoration(
                     labelText: "Email",
                     hintText: "Enter Email",
-                    prefixIcon: Icon(Icons.email), 
+                    prefixIcon: Icon(Icons.email),
                   ),
-                    validator: Validator.validEmail,
+                  validator: Validator.validEmail,
                 ),
-            
+
                 const SizedBox(height: 25),
-            
+
                 TextFormField(
                   controller: _passwordControler,
-            
+
                   obscureText: removeRedEye,
                   decoration: InputDecoration(
                     labelText: "Password",
                     hintText: "Enter Password",
                     prefixIcon: Icon(Icons.key_sharp),
-            
+
                     suffixIcon: IconButton(
                       onPressed: () {
                         setState(() {
@@ -113,56 +115,67 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ),
-                     validator: Validator.passwordValidator,
+                  validator: Validator.passwordValidator,
                 ),
-            
+
                 const SizedBox(height: 35),
 
-                 BlocConsumer<AuthBloc, AuthState> (
-                 listener: (context, state){
-                   if(state is UserAuthorized) {
+                BlocConsumer<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is UserAuthorized) {
+                      if (!context.mounted) return;
 
-                     if(!context.mounted) return;
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const LoginScreen(),
+                        ),
+                      );
 
-                     Navigator.pushReplacement(context, 
-                     MaterialPageRoute(builder: (context)=> const LoginScreen()));
-                     
-                     ScaffoldMessenger.of(
+                      AppSnackbar.snackBar(
                         context,
-                      ).showSnackBar(SnackBar(content: Text("Account Create Successful")));
-                   }
-                    else if(state is ErrorRequest) {
-                       ScaffoldMessenger.of(
+                        "Account Create Successful",
+                      );
+                    } else if (state is ErrorRequest) {
+                      AppSnackbar.snackBar(
                         context,
-                      ).showSnackBar(SnackBar(content: Text(state.message ?? 'Sign error')));
+                        state.message ?? 'Sign error',
+                      );
                     }
-                 },
-                  builder: (context, state){
-                  return SizedBox(
-                  height: 55,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: (state is AuthProgress) ? null : () async {
-                      if(!_globalKey.currentState!.validate()) return;  
-                      },
-                    child: (state is AuthProgress) ? 
-                     SizedBox(
-                      height: 30,
-                      width: 30,
-                      child: Center(
-                        child: CircularProgressIndicator() ,),
-                    ) : Text(
-                      "Create Account",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                );
-                    
-                  },),
-            
-                
+                  },
+                  builder: (context, state) {
+                    return SizedBox(
+                      height: 55,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: (state is AuthProgress)
+                            ? null
+                            : () async {
+                                if (!_globalKey.currentState!.validate()) return;
+                                 // kaj ache..
+                              },
+                            child: (state is AuthProgress)
+                            ? SizedBox(
+                                height: 30,
+                                width: 30,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : Text(
+                                "Create Account",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                      ),
+                    );
+                  },
+                ),
+
                 const SizedBox(height: 13),
-            
+
                 Center(
                   child: Column(
                     children: [
@@ -173,16 +186,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-            
+
                       const SizedBox(height: 10),
-            
+
                       const Text(
                         "Sign up with",
-                        style: TextStyle(fontSize: 14, color: Color(0XFF555555)),
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Color(0XFF555555),
+                        ),
                       ),
-            
+
                       const SizedBox(height: 7),
-            
+
                       Row(
                         children: [
                           _socialAccount(
@@ -193,13 +209,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             "Facebook",
                             "lib/features/assets/facebook.png",
                           ),
-            
-                          //const SizedBox(height: 10),
+
+                         
                         ],
                       ),
-            
-                       const SizedBox(height: 25),
-            
+
+                      const SizedBox(height: 25),
+
                       _richTextCustom(_gestureRecognizer),
                     ],
                   ),
@@ -214,22 +230,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   RichText _richTextCustom(GestureRecognizer page) {
     return RichText(
-                    text: TextSpan(
-                      text: "Already have an account? ",
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: "Login",
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: AppColors.navieBlurolors,
-                            fontWeight: FontWeight.bold,
-                          ), 
-                           recognizer: page,
-                        ),
-                      ],
-                    ),
-                  );
+      text: TextSpan(
+        text: "Already have an account? ",
+        style: TextStyle(fontSize: 14, color: Colors.black),
+        children: <TextSpan>[
+          TextSpan(
+            text: "Login",
+            style: TextStyle(
+              fontSize: 15,
+              color: AppColors.navieBlurolors,
+              fontWeight: FontWeight.bold,
+            ),
+            recognizer: page,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _socialAccount(String text, String image) {
@@ -270,5 +286,4 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
     );
   }
-
 }

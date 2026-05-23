@@ -1,6 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_firbase_project/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:test_firbase_project/features/auth/presentation/bloc/auth_event.dart';
+import 'package:test_firbase_project/features/auth/presentation/bloc/auth_state.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/colors.dart';
+import 'package:test_firbase_project/features/auth/presentation/widgets/reusable_circular_progress.dart';
+import 'package:test_firbase_project/features/auth/presentation/widgets/reusable_snackbar.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   const ChangePasswordScreen({super.key});
@@ -17,7 +23,7 @@ class _ForgetScreen extends State<ChangePasswordScreen> {
       TextEditingController();
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
 
-  final user = FirebaseAuth.instance.currentUser;
+  final user = FirebaseAuth.instance.currentUser!;
 
   @override
   void dispose() {
@@ -98,14 +104,50 @@ class _ForgetScreen extends State<ChangePasswordScreen> {
 
                 const SizedBox(height: 20),
 
-                ElevatedButton(
-                  onPressed: () {
+
+                BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state){
+                  if(state is VerifyState) {
+
+                   if(context.mounted){
+                     Navigator.pop(context);
+                      AppSnackbar.snackBar(
+                      context, 
+                      "Password Change Successful",
+                    );
+                     
+                   }
+                  } else if(state is ErrorRequest) {
+                     AppSnackbar.snackBar(
+                      context, 
+                      state.message.toString(),
+                    );
+                  }
+                },
+
+                builder: (context, state){
+
+                  return ElevatedButton(
+                   onPressed: state is AuthProgress ? null : () {
                     if (!_globalKey.currentState!.validate()) return;
 
-                    clearFormField();
+                   // clearFormField();
+
+                     context.read<AuthBloc>().add(PasswordUpdateEvent(
+                      currentPassword: _currentPasswordControler.text , 
+                      newPassword: _newPasswordControler.text));
                   },
-                  child: Text("Confirm"),
-                ),
+                  child: state is AuthProgress? 
+                    SizedBox(
+                      height: 30,
+                      width: 30,
+                      child: cirularProgressIndicator(), // loader থামছে নাহ
+                    )   : Text("Confirm"),
+                );
+
+                },
+              ),
+
               ],
             ),
           ),
