@@ -1,4 +1,5 @@
 
+
 import 'package:test_firbase_project/features/auth/data/model.dart';
 import 'package:test_firbase_project/features/auth/domain/entity.dart';
 
@@ -22,6 +23,9 @@ abstract class Repositories {
     required String currentPassword,
     required String newPassword,
   });
+
+  Future<AuthenticatedUser> userGoogleSign ();
+
 
    Future<void> logOutUser ();
  }

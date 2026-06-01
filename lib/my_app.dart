@@ -1,6 +1,6 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:test_firbase_project/features/auth/presentation/page/auth_page/login_screen.dart';
+import 'package:test_firbase_project/features/auth/presentation/page/auth_page/wrapper_class.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/colors.dart';
 
 class MyApp extends StatelessWidget {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       builder: DevicePreview.appBuilder,
       theme: lightTheme(),
       darkTheme: ThemeData.dark(),
-      home: const LoginScreen(),
+      home: const WrapperScreen(),
     );
 
   }

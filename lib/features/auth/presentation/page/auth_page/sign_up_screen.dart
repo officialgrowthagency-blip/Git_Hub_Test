@@ -1,8 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:test_firbase_project/features/auth/data/data_source.dart';
+import 'package:test_firbase_project/features/auth/domain/entity.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:test_firbase_project/features/auth/presentation/bloc/auth_event.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_state.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/auth_page/login_screen.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/colors.dart';
@@ -33,6 +36,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
     };
 
   bool removeRedEye = false;
+
+   
 
   @override
   void dispose() {
@@ -153,6 +158,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             : () async {
                                 if (!_globalKey.currentState!.validate()) return;
                                  // kaj ache..
+                                  context.read<AuthBloc>().add(
+                                    SignUpEmailEvent(user: UserEntity(
+                                      email: _emailControler.text.trim(), 
+                                      password: _passwordControler.text,
+                                    ),
+                                  ),
+                                );
                               },
                             child: (state is AuthProgress)
                             ? SizedBox(
@@ -202,12 +214,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       Row(
                         children: [
                           _socialAccount(
-                            "Google",
-                            "lib/features/assets/google.png",
+                           text: "Google",
+                            image:"lib/features/assets/google.png",
+                            callBack: () {
+
+                            
+                            },
+                            
+                            
+                             
                           ),
                           _socialAccount(
-                            "Facebook",
-                            "lib/features/assets/facebook.png",
+                            text: "Facebook",
+                            image: "lib/features/assets/facebook.png",
+                            callBack: () {
+                              
+                            },
                           ),
 
                          
@@ -248,40 +270,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  Widget _socialAccount(String text, String image) {
+  Widget _socialAccount({
+    String? text, 
+    String? image, 
+   required VoidCallback callBack,
+    }
+    ) {
     return Expanded(
-      child: Container(
-        margin: EdgeInsets.all(13),
-        padding: EdgeInsets.symmetric(horizontal: 14),
-        height: 50,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          border: BoxBorder.all(width: 1, color: AppColors.borderColor),
-
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Row(
-          children: [
-            Image.asset(
-              image,
-              fit: BoxFit.cover,
-              height: 30,
-              width: 30,
-              errorBuilder: (context, e, stackTrace) {
-                debugPrint("Image Error : $e");
-                return Icon(Icons.error, color: Colors.red);
-              },
-            ),
-
-            const SizedBox(width: 9),
-
-            Expanded(
-              child: Text(
-                text,
-                style: TextStyle(fontSize: 18, color: AppColors.textColors),
+      child: GestureDetector(
+        onTap: callBack,
+        child: Container(
+          margin: EdgeInsets.all(13),
+          padding: EdgeInsets.symmetric(horizontal: 14),
+          height: 50,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            border: BoxBorder.all(width: 1, color: AppColors.borderColor),
+        
+            borderRadius: BorderRadius.circular(25),
+          ),
+          child: Row(
+            children: [
+              Image.asset(
+                image!,
+                fit: BoxFit.cover,
+                height: 30,
+                width: 30,
+                errorBuilder: (context, e, stackTrace) {
+                  debugPrint("Image Error : $e");
+                  return Icon(Icons.error, color: Colors.red);
+                },
               ),
-            ),
-          ],
+        
+              const SizedBox(width: 9),
+        
+              Expanded(
+                child: Text(
+                  text!,
+                  style: TextStyle(fontSize: 18, color: AppColors.textColors),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

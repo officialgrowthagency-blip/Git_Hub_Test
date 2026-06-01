@@ -6,12 +6,16 @@ class UserModel extends AuthenticatedUser {
    UserModel({
     required super.uid,
     required super.email,
+    required super.name,
+    required super.image
    });
 
    factory UserModel.fromMap (Map<String, dynamic> json){ 
      return UserModel(
       uid: json["uid"] ?? "",
       email: json["email"] ?? "",
+      name: json["name"] ?? '',
+      image: json["image"] ?? ''
       );
    }
 

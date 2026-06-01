@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "981433400293",
+    "firebase_url": "https://test-flutter-project-41421-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "test-flutter-project-41421",
     "storage_bucket": "test-flutter-project-41421.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.test_firbase_project"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "981433400293-e5b9i4tt2d9o8pkus2rnrg2di5e5qfb9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.test_firbase_project",
+            "certificate_hash": "ef1a650ca1f979e348508346da883c898de52cc1"
+          }
+        },
+        {
+          "client_id": "981433400293-gpcr4nd4deslppes91m26irv66maarqo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAz92HGCbZFTxJYEbsymeBaOHu-ImR_qXQ"
@@ -20,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "981433400293-gpcr4nd4deslppes91m26irv66maarqo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "981433400293-d6osogtqlektt8d1augu9983ldd9nv9r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.testFirbaseProject"
+              }
+            }
+          ]
         }
       }
     }

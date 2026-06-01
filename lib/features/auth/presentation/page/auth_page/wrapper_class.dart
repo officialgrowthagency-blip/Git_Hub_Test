@@ -6,11 +6,17 @@ import 'package:test_firbase_project/features/auth/presentation/bloc/auth_event.
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_state.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/auth_page/login_screen.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/home_screen.dart';
+import 'package:test_firbase_project/features/auth/presentation/page/utilitis/colors.dart';
 import 'package:test_firbase_project/features/auth/presentation/widgets/reusable_circular_progress.dart';
 
-class WrapperScreen extends StatelessWidget {
+class WrapperScreen extends StatefulWidget {
   const WrapperScreen({super.key});
 
+  @override
+  State<WrapperScreen> createState() => _WrapperScreenState();
+}
+
+class _WrapperScreenState extends State<WrapperScreen> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -21,20 +27,28 @@ class WrapperScreen extends StatelessWidget {
         }
 
         if (snapshot.hasData && snapshot.data != null) {
-          context.read<AuthBloc>().add(
-            GetFireStoreDataEvent(uid: snapshot.data!.uid),
-          );
-
           return BlocBuilder<AuthBloc, AuthState>(
             builder: (context, state) {
+              if (state is AuthInit) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.read<AuthBloc>().add(
+                    GetFireStoreDataEvent(uid: snapshot.data!.uid),
+                  );
+                });
+              }
+
               if (state is AuthProgress) {
-                return cirularProgressIndicator();
+                return Scaffold(
+                  backgroundColor: AppColors.white,
+
+                  body: cirularProgressIndicator(),
+                );
               }
               if (state is UserAuthorized) {
                 return HomeScreen(userData: state.user);
               }
 
-              return LoginScreen();
+              return const LoginScreen();
             },
           );
         }

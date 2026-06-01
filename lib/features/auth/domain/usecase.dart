@@ -1,3 +1,4 @@
+
 import 'package:test_firbase_project/features/auth/domain/entity.dart';
 import 'package:test_firbase_project/features/auth/domain/repositories.dart';
 
@@ -23,6 +24,10 @@ class UserAuthCase {
      
      await repositories.changePasswordRequest(currentPassword: curentPassword, newPassword: password);
    }
+
+    Future<AuthenticatedUser> googleSign () async {
+      return await repositories.userGoogleSign();
+    }
 
   Future<void> logOut () async {
    return await repositories.logOutUser();

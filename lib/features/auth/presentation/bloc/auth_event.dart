@@ -2,16 +2,18 @@ import 'package:test_firbase_project/features/auth/domain/entity.dart';
 
 abstract class AuthEvent {}
 
-class FetchAuthEvent extends AuthEvent {
+ class ShowPasswordEvent extends AuthEvent {}
+
+ class LoginEmailEvent extends AuthEvent {
   final UserEntity user;
 
-  FetchAuthEvent({required this.user});
+  LoginEmailEvent({required this.user});
 }
 
-class FetchSignAuthEvent extends AuthEvent {
+class SignUpEmailEvent extends AuthEvent {
   final UserEntity? user;
 
-  FetchSignAuthEvent({required this.user});
+  SignUpEmailEvent({required this.user});
 }
 
 class PasswordUpdateEvent extends AuthEvent {
@@ -31,4 +33,13 @@ class GetFireStoreDataEvent extends AuthEvent {
   GetFireStoreDataEvent({required this.uid});
 }
 
+ class GoogleSignEvent extends AuthEvent {}
+
+ 
+
 class LogOutEvent extends AuthEvent {}
+ 
+  
+
+
+

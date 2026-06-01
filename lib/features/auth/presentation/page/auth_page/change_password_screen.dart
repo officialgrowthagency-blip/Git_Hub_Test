@@ -107,7 +107,7 @@ class _ForgetScreen extends State<ChangePasswordScreen> {
 
                 BlocConsumer<AuthBloc, AuthState>(
                 listener: (context, state){
-                  if(state is VerifyState) {
+                  if(state is PasswordVerifyState) {
 
                    if(context.mounted){
                      Navigator.pop(context);

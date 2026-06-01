@@ -7,25 +7,25 @@ class AuthInit extends AuthState {}
 class AuthProgress extends AuthState {}
 
 class UserAuthorized extends AuthState {
-
   final AuthenticatedUser user;
-
-   UserAuthorized({
-     required this.user
-   });
-
   
+   bool isCheck;
 
+  UserAuthorized({
+    required this.user,
+    this.isCheck = false,
+    
+    });
 }
 
 class UserUnAuthorized extends AuthState {}
 
-class VerifyState extends AuthState {}
+class PasswordVerifyState extends AuthState {}
+
+class PasswordShowState extends AuthState {}
 
 class ErrorRequest extends AuthState {
-
   final String? message;
 
   ErrorRequest(this.message);
-  
 }

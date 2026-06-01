@@ -17,17 +17,30 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+
+   
   @override
   Widget build(BuildContext context) {
+    
+     final user = widget.userData;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.userData.email, style: TextStyle(fontSize: 18)),
+        title: Text(user.email, style: TextStyle(fontSize: 18)),
         centerTitle: true,
         elevation: 5,
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
+          
+          CircleAvatar(
+            radius: 30,
+            backgroundImage: NetworkImage(
+             user.image,
+              ),
+          ),
+           
           ElevatedButton(
             onPressed: () {
               Navigator.push(context,

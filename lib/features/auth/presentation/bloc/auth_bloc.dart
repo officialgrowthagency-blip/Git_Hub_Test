@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:test_firbase_project/features/auth/domain/entity.dart';
 import 'package:test_firbase_project/features/auth/domain/usecase.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_event.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_state.dart';
@@ -9,24 +10,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserAuthCase userAuthCase;
 
   AuthBloc(this.userAuthCase) : super(AuthInit()) {
-    on<FetchAuthEvent>((event, emit) async {
+    
+    on<LoginEmailEvent>((event, emit) async {
       emit(AuthProgress());
 
       try {
-        final userData = await userAuthCase.login(event.user);
+        final data = await userAuthCase.login(event.user);
 
-        emit(UserAuthorized(user: userData));
+        emit(UserAuthorized(user: AuthenticatedUser(
+          uid: data.uid, 
+          email: data.email, 
+          name: data.name, 
+          image: data.image,
+          provider: "email",
+          
+          )));
       } catch (e) {
         emit(ErrorRequest(e.toString()));
       }
     });
 
-    on<FetchSignAuthEvent>((event, emit) async {
+    on<SignUpEmailEvent>((event, emit) async {
       emit(AuthProgress());
       try {
         final userSign = await userAuthCase.signUp(event.user!);
         emit(UserAuthorized(user: userSign));
       } on FirebaseAuthException catch (e) {
+        
         emit(ErrorRequest(e.toString()));
       }
     });
@@ -54,10 +64,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
         debugPrint("Auth Success");
 
-        emit(VerifyState());
+        emit(PasswordVerifyState());
       } on FirebaseAuthException catch (e) {
         debugPrint("Error - $e");
 
+        emit(ErrorRequest(e.toString()));
+      }
+    });
+    
+    on<ShowPasswordEvent>((event, emit){
+      try {
+        emit(PasswordShowState());
+      } catch (e) {
         emit(ErrorRequest(e.toString()));
       }
     });
@@ -80,8 +98,33 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         
 
       } catch (e) {
+
+        
+
         emit(ErrorRequest(e.toString()));
       }
     });
+  
+  
+   on<GoogleSignEvent>((event, emit) async {
+     
+       try {
+        final data = await userAuthCase.googleSign();
+
+       // if(data == null)
+         
+        emit(UserAuthorized(user: AuthenticatedUser(
+          uid: data.uid, 
+          email: data.email, 
+          name: data.name, 
+          image: data.image,
+          provider: "google",
+          )));
+        
+       } catch (e) {
+         emit(ErrorRequest(e.toString()));
+       }
+   });
+  
   }
 }

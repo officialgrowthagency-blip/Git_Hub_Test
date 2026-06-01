@@ -31,144 +31,170 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailControler = TextEditingController();
   final TextEditingController _passwordControler = TextEditingController();
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
+  final bool showPasswordCheck = true;
 
   final FirbaseAuthService firbaseAuth = FirbaseAuthService();
 
-  
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Form(
-        key: _globalKey,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 80),
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is UserAuthorized) {
+          if (!context.mounted) return;
 
-                Center(
-                  child: Text(
-                    "Sign in",
-                    style: TextTheme.of(context).titleLarge,
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => HomeScreen(userData: state.user)),
+          );
+
+          String message = "";
+
+          switch (state.user.provider) {
+            case "google":
+              message = 'Google Sign In Successful';
+              break;
+            case "email":
+              message = "Email Sign In Successful";
+              break;
+             case "facebook" :
+             message = "Facebook Sign In Successful";
+             break;
+          }
+           AppSnackbar.snackBar(context, message);
+        }
+        if (state is UserUnAuthorized) {
+          AppSnackbar.snackBar(context, "Login UnSuccessful");
+        }
+      },
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Form(
+              key: _globalKey,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 13,
+                    vertical: 10,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 80),
+
+                      Center(
+                        child: Text(
+                          "Sign in",
+                          style: TextTheme.of(context).titleLarge,
+                        ),
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      Row(
+                        children: [
+                          _socialMediaContainer(
+                            onTap: () async {
+                              context.read<AuthBloc>().add(GoogleSignEvent());
+                            },
+                            text: "Facebook",
+                            image: "lib/features/assets/facebook.png",
+                          ),
+
+                          const SizedBox(width: 20),
+
+                          _socialMediaContainer(
+                            onTap: () {},
+                            text: "Google",
+                            image: "lib/features/assets/search.png",
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      _orDividerWidget("Or", AppColors.dividerColor),
+
+                      const SizedBox(height: 10),
+
+                      TextFormField(
+                        decoration: InputDecoration(labelText: "Email"),
+                        controller: _emailControler,
+                        validator: Validator.validEmail,
+                      ),
+                      const SizedBox(height: 16),
+
+                      TextFormField(
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          suffixIcon: IconButton(
+                            onPressed: () {},
+                            icon: Icon(
+                              showPasswordCheck
+                                  ? Icons.remove_red_eye
+                                  : Icons.remove_red_eye_rounded,
+                            ),
+                          ),
+                        ),
+                        controller: _passwordControler,
+
+                        validator: Validator.passwordValidator,
+                      ),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () {},
+                            child: Text("Forget Password?"),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      ElevatedButton(
+                        onPressed: (state is AuthProgress)
+                            ? null
+                            : () async {
+                                if (!_globalKey.currentState!.validate()) return;
+                                
+
+                                context.read<AuthBloc>().add(
+                                  LoginEmailEvent(
+                                    user: UserEntity(
+                                      email: _emailControler.text.trim(),
+                                      password: _passwordControler.text,
+                                    ),
+                                  ),
+                                );
+                              },
+
+                        child: Center(
+                          child: (state is AuthProgress)
+                              ? Center(child: CircularProgressIndicator())
+                              : Text(
+                                  "Login",
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 7),
+
+                      _stylishRichText(_gestureRecognizer),
+                    ],
                   ),
                 ),
-
-                const SizedBox(height: 25),
-
-                Row(
-                  children: [
-                    _socialMediaContainer(
-                      "Facebook",
-                      "lib/features/assets/facebook.png",
-                    ),
-
-                    const SizedBox(width: 20),
-
-                    _socialMediaContainer(
-                      "Google",
-                      "lib/features/assets/google.png",
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                _orDividerWidget("Or", AppColors.dividerColor),
-
-                const SizedBox(height: 10),
-
-                TextFormField(
-                  decoration: InputDecoration(labelText: "Email"),
-                  controller: _emailControler,
-                  validator: Validator.validEmail,
-                ),
-                const SizedBox(height: 16),
-
-                TextFormField(
-                  decoration: InputDecoration(labelText: "Password"),
-                  controller: _passwordControler,
-                  validator: Validator.passwordValidator,
-                ),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () {
-                        
-                      },
-                      child: Text("Forget Password?"),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                BlocConsumer<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is UserAuthorized) {
-                       
-                      if(!context.mounted) return;
-                      
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => HomeScreen(userData: state.user)),
-                      );
-
-                        AppSnackbar.snackBar(
-                      context, 
-                      "Login Successful",
-                    );
-
-                    } else if (state is ErrorRequest) {
-                      
-                     AppSnackbar.snackBar(
-                      context, 
-                      state.message ?? 'Login failed',
-                    );        
-                    }
-                  },
-
-                  builder: (context, state) {
-                   return  ElevatedButton(
-                      onPressed: (state is AuthProgress)
-                          ? null
-                          : () async {
-                              if (!_globalKey.currentState!.validate()) return;
-
-                               context.read<AuthBloc>().add(FetchAuthEvent(
-                                user: UserEntity(
-                                  email: _emailControler.text.trim(), 
-                                  password: _passwordControler.text)));
-                            },
-
-                      child: Center(
-                        child: (state is AuthProgress)
-                            ? Center(child: CircularProgressIndicator())
-                            : Text(
-                                "Login",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                      ),
-                    );
-                  },
-                ),
-
-                const SizedBox(height: 7),
-
-                _stylishRichText(_gestureRecognizer),
-              ],
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -216,38 +242,45 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _socialMediaContainer(String text, String image) {
+  Widget _socialMediaContainer({
+    required VoidCallback onTap,
+    required String text,
+    required String image,
+  }) {
     return Expanded(
-      child: Container(
-        margin: EdgeInsets.all(13),
-        padding: EdgeInsets.symmetric(horizontal: 14),
-        height: 50,
-        decoration: BoxDecoration(
-          color: AppColors.containerColor,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          margin: EdgeInsets.all(13),
+          padding: EdgeInsets.symmetric(horizontal: 14),
+          height: 50,
+          decoration: BoxDecoration(
+            color: AppColors.containerColor,
 
-          borderRadius: BorderRadius.circular(13),
-        ),
-        child: Row(
-          children: [
-            Image.asset(
-              image,
-              fit: BoxFit.cover,
-              height: 30,
-              width: 30,
-              errorBuilder: (context, e, stackTrace) {
-                return Icon(Icons.error, color: Colors.red);
-              },
-            ),
-
-            const SizedBox(width: 7),
-
-            Expanded(
-              child: Text(
-                text,
-                style: TextStyle(fontSize: 18, color: AppColors.textColors),
+            borderRadius: BorderRadius.circular(13),
+          ),
+          child: Row(
+            children: [
+              Image.asset(
+                image,
+                fit: BoxFit.cover,
+                height: 30,
+                width: 30,
+                errorBuilder: (context, e, stackTrace) {
+                  return Icon(Icons.error, color: Colors.red);
+                },
               ),
-            ),
-          ],
+
+              const SizedBox(width: 7),
+
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(fontSize: 18, color: AppColors.textColors),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

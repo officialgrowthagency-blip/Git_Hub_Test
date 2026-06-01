@@ -23,6 +23,8 @@ class FirbaseRepository extends Repositories {
       return AuthenticatedUser(
         uid: credentialt.user!.uid, 
         email: email,
+        name: credentialt.user?.displayName ?? 'Unknown Name',
+        image: credentialt.user?.photoURL ?? "",
       );
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
@@ -43,6 +45,8 @@ class FirbaseRepository extends Repositories {
       return AuthenticatedUser(
         uid: credential.uid, 
         email: credential.email,
+        name: credential.name,
+        image: credential.image,
       );
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message);
@@ -53,6 +57,8 @@ class FirbaseRepository extends Repositories {
   
   @override
   Future<void> logOutUser() async {
+
+   
     
    await firbaseService.logOut();
   }
@@ -76,5 +82,10 @@ class FirbaseRepository extends Repositories {
 
      return model;
 
+  }
+  
+  @override
+  Future<AuthenticatedUser> userGoogleSign() async {
+     return await firbaseService.signInWithGoogle();
   }
 }
