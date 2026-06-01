@@ -7,6 +7,7 @@ import 'package:test_firbase_project/features/auth/data/data_source.dart';
 import 'package:test_firbase_project/features/auth/data/repositories_impl.dart';
 import 'package:test_firbase_project/features/auth/domain/usecase.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:test_firbase_project/features/auth/presentation/cubit/password_visibility_cubit.dart';
 import 'package:test_firbase_project/firebase_options.dart';
 import 'package:test_firbase_project/my_app.dart';
 
@@ -27,7 +28,8 @@ Future<void> main() async {
    MultiBlocProvider(
     providers: [
     BlocProvider(create: (context) => AuthBloc(useCase)),
-    //BlocProvider(create: (context)=> AuthBloc(useCase)),
+    BlocProvider(create: (context)=> PasswordVisibilityCubit()),
+    
    ], 
    child: const MyApp()
    ),   

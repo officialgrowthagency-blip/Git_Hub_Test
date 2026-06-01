@@ -10,21 +10,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserAuthCase userAuthCase;
 
   AuthBloc(this.userAuthCase) : super(AuthInit()) {
-    
     on<LoginEmailEvent>((event, emit) async {
       emit(AuthProgress());
 
       try {
         final data = await userAuthCase.login(event.user);
 
-        emit(UserAuthorized(user: AuthenticatedUser(
-          uid: data.uid, 
-          email: data.email, 
-          name: data.name, 
-          image: data.image,
-          provider: "email",
-          
-          )));
+        emit(
+          UserAuthorized(
+            user: AuthenticatedUser(
+              uid: data.uid,
+              email: data.email,
+              name: data.name,
+              image: data.image,
+              provider: "email",
+            ),
+          ),
+        );
       } catch (e) {
         emit(ErrorRequest(e.toString()));
       }
@@ -36,7 +38,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final userSign = await userAuthCase.signUp(event.user!);
         emit(UserAuthorized(user: userSign));
       } on FirebaseAuthException catch (e) {
-        
         emit(ErrorRequest(e.toString()));
       }
     });
@@ -45,7 +46,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthProgress());
 
       try {
-       await userAuthCase.logOut();
+        await userAuthCase.logOut();
 
         emit(UserUnAuthorized());
       } catch (e) {
@@ -71,10 +72,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(ErrorRequest(e.toString()));
       }
     });
-    
-    on<ShowPasswordEvent>((event, emit){
+
+    on<ShowPasswordEvent>((event, emit) {
       try {
-        emit(PasswordShowState());
+        if (state is PasswordShowState) {
+          final currentState = state as PasswordShowState;
+
+          emit(
+            PasswordShowState(obsecurePassword: !currentState.obsecurePassword),
+          );
+        } else {
+    emit(
+      PasswordShowState(obsecurePassword: false
+        
+      ),
+    );
+  }
       } catch (e) {
         emit(ErrorRequest(e.toString()));
       }
@@ -86,45 +99,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         final data = await userAuthCase.getUserData(uid: event.uid);
 
-        if(data != null) {
-
-         emit(UserAuthorized(user: data));
-
+        if (data != null) {
+          emit(UserAuthorized(user: data));
         } else {
-           
-           emit(UserUnAuthorized());
+          emit(UserUnAuthorized());
         }
-
-        
-
       } catch (e) {
-
-        
-
         emit(ErrorRequest(e.toString()));
       }
     });
-  
-  
-   on<GoogleSignEvent>((event, emit) async {
-     
-       try {
+
+    on<GoogleSignEvent>((event, emit) async {
+      try {
         final data = await userAuthCase.googleSign();
 
-       // if(data == null)
-         
-        emit(UserAuthorized(user: AuthenticatedUser(
-          uid: data.uid, 
-          email: data.email, 
-          name: data.name, 
-          image: data.image,
-          provider: "google",
-          )));
-        
-       } catch (e) {
-         emit(ErrorRequest(e.toString()));
-       }
-   });
-  
+        // if(data == null)
+
+        emit(
+          UserAuthorized(
+            user: AuthenticatedUser(
+              uid: data.uid,
+              email: data.email,
+              name: data.name,
+              image: data.image,
+              provider: "google",
+            ),
+          ),
+        );
+      } catch (e) {
+        emit(ErrorRequest(e.toString()));
+      }
+    });
   }
 }

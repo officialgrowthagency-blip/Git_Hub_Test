@@ -6,6 +6,7 @@ import 'package:test_firbase_project/features/auth/domain/entity.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_event.dart';
 import 'package:test_firbase_project/features/auth/presentation/bloc/auth_state.dart';
+import 'package:test_firbase_project/features/auth/presentation/cubit/password_visibility_cubit.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/auth_page/sign_up_screen.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/home_screen.dart';
 import 'package:test_firbase_project/features/auth/presentation/page/utilitis/colors.dart';
@@ -126,23 +127,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      TextFormField(
-                        decoration: InputDecoration(
+                       BlocBuilder<PasswordVisibilityCubit, bool>(
+                        builder: (context, obscurePassword){
+                         return TextFormField(
+                        controller: _passwordControler,
+                         obscureText: obscurePassword,
+                         
+                         decoration: InputDecoration(
+                          
                           labelText: "Password",
                           suffixIcon: IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                             context.read<PasswordVisibilityCubit>().togglePassword();
+                            },
                             icon: Icon(
-                              showPasswordCheck
-                                  ? Icons.remove_red_eye
-                                  : Icons.remove_red_eye_rounded,
+                              obscurePassword
+                                 ?  Icons.visibility_off
+                                  : Icons.visibility,
                             ),
                           ),
                         ),
-                        controller: _passwordControler,
+                       
 
                         validator: Validator.passwordValidator,
-                      ),
+                      );
 
+                        }),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [

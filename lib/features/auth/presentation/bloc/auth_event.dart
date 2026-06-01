@@ -2,7 +2,10 @@ import 'package:test_firbase_project/features/auth/domain/entity.dart';
 
 abstract class AuthEvent {}
 
- class ShowPasswordEvent extends AuthEvent {}
+ class ShowPasswordEvent extends AuthEvent {
+  
+   
+ }
 
  class LoginEmailEvent extends AuthEvent {
   final UserEntity user;

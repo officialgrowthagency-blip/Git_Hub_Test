@@ -8,21 +8,21 @@ class AuthProgress extends AuthState {}
 
 class UserAuthorized extends AuthState {
   final AuthenticatedUser user;
-  
-   bool isCheck;
 
-  UserAuthorized({
-    required this.user,
-    this.isCheck = false,
-    
-    });
+  UserAuthorized({required this.user});
 }
 
 class UserUnAuthorized extends AuthState {}
 
 class PasswordVerifyState extends AuthState {}
 
-class PasswordShowState extends AuthState {}
+class PasswordShowState extends AuthState {
+  final bool obsecurePassword;
+
+    PasswordShowState({
+      required this.obsecurePassword,
+    });
+}
 
 class ErrorRequest extends AuthState {
   final String? message;
