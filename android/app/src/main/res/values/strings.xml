@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">test_firbase_project</string>
+    <string name="facebook_app_id">1490110582854721</string>
+    <string name="fb_login_protocol_scheme">fb1490110582854721</string>
+    <string name="facebook_client_token">1f273359ad5a69f9c95ba83c122a7e03</string>
+</resources>

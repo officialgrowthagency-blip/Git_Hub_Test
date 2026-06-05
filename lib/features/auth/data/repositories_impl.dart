@@ -88,4 +88,9 @@ class FirbaseRepository extends Repositories {
   Future<AuthenticatedUser> userGoogleSign() async {
      return await firbaseService.signInWithGoogle();
   }
+  
+  @override
+  Future<AuthenticatedUser> facebookSign() async {
+     return await firbaseService.signInWithFacebook();
+  }
 }

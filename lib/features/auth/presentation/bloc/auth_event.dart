@@ -38,6 +38,8 @@ class GetFireStoreDataEvent extends AuthEvent {
 
  class GoogleSignEvent extends AuthEvent {}
 
+ class FacebookSignEvent extends AuthEvent {}
+
  
 
 class LogOutEvent extends AuthEvent {}

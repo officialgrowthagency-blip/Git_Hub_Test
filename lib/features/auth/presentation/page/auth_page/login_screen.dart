@@ -97,8 +97,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       Row(
                         children: [
                           _socialMediaContainer(
-                            onTap: () async {
-                              context.read<AuthBloc>().add(GoogleSignEvent());
+                            onTap: ()  {
+                              
+                             context.read<AuthBloc>().add(FacebookSignEvent());
+                             
                             },
                             text: "Facebook",
                             image: "lib/features/assets/facebook.png",
@@ -107,9 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(width: 20),
 
                           _socialMediaContainer(
-                            onTap: () {},
+                            onTap: () {
+                            context.read<AuthBloc>().add(GoogleSignEvent());
+                            },
                             text: "Google",
-                            image: "lib/features/assets/search.png",
+                            image: "lib/features/assets/google.png",
                           ),
                         ],
                       ),

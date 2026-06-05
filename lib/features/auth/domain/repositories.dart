@@ -26,6 +26,8 @@ abstract class Repositories {
 
   Future<AuthenticatedUser> userGoogleSign ();
 
+  Future<AuthenticatedUser> facebookSign ();
+
 
    Future<void> logOutUser ();
  }

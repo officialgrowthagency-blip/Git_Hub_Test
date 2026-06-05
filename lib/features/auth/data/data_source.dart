@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:test_firbase_project/features/auth/data/auth_service.dart';
 import 'package:test_firbase_project/features/auth/data/model.dart';
@@ -67,6 +68,7 @@ class FirbaseAuthService {
 
   Future<void> logOut() async {
     await GoogleSignIn().signOut();
+    await FacebookAuth.instance.logOut();
     await _auth.signOut();
   }
 
@@ -164,5 +166,32 @@ class FirbaseAuthService {
       image: user.photoURL.toString(),
       );
   }
+
+  
+
+Future<AuthenticatedUser> signInWithFacebook() async {
+ 
+  final LoginResult loginResult = await FacebookAuth.instance.login();
+
+ 
+   if(loginResult.status != LoginStatus.success) {
+      
+      throw Exception('Facebook login failed: ${loginResult.message}');
+   }
+     final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(
+    loginResult.accessToken!.tokenString
+    );
+     final UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(
+      facebookAuthCredential
+    );
+    
+     final user = userCredential.user!;
+ 
+  return AuthenticatedUser(
+    uid: user.uid, 
+    email: user.email ?? '', 
+    name: user.displayName ?? '', 
+    image: user.photoURL ?? '');
+}
 
 }

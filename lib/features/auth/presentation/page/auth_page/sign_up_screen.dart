@@ -151,8 +151,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onPressed: (state is AuthProgress)
                               ? null
                               : () async {
-                                  if (!_globalKey.currentState!.validate())
+                                  if (!_globalKey.currentState!.validate()) {
                                     return;
+                                  }
+                                    
 
                                   context.read<AuthBloc>().add(
                                     SignUpEmailEvent(

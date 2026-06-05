@@ -130,5 +130,29 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(ErrorRequest(e.toString()));
       }
     });
+  
+   on<FacebookSignEvent>((event, emit) async {
+    
+     emit(AuthProgress());
+
+      try {
+
+        final user = await userAuthCase.facebookSign();
+
+        
+
+        emit(UserAuthorized(user: AuthenticatedUser(
+          uid: user.uid,
+          email: user.email, 
+          name: user.name, 
+          image: user.image,
+          provider: "facebook",
+          )));
+
+      } catch (e) {
+        emit( ErrorRequest(e.toString()));
+      }
+   });
+  
   }
 }

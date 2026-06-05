@@ -29,6 +29,12 @@ class UserAuthCase {
       return await repositories.userGoogleSign();
     }
 
+     Future<AuthenticatedUser> facebookSign () async {
+
+       return await repositories.facebookSign();
+       
+     }
+
   Future<void> logOut () async {
    return await repositories.logOutUser();
   }
